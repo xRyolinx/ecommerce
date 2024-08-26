@@ -1,0 +1,12 @@
+:root {
+    --padding: 4rem;
+}
+
+@media (max-width: 1024px) {
+    .carousel-caption {
+        padding-bottom: calc(1.25rem + var(--padding)) !important;
+    }
+    .carousel-indicators {
+        padding-bottom: var(--padding) !important;
+    }
+}
