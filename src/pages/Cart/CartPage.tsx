@@ -1,74 +1,44 @@
-import React, { useEffect } from 'react'
-import { useState } from 'react'
-import { useLoaderData } from 'react-router-dom'
+import React from 'react'
 import { FaRegTrashAlt } from 'react-icons/fa'
-import img1 from '../../assets/imgCarousel_1.jpg'
-import img2 from '../../assets/imgCarousel_2.jpg'
-import img3 from '../../assets/imgCarousel_3.jpg'
-import { editCartItem, deleteCartItem } from './cartUtils'
-import { useContext } from 'react'
-import { GlobalContext } from '../../App'
-import { getQuantity } from './cartUtils'
+import { useCart } from '../../state/cartStore'
 
 const CartPage = () => {
-    // items
-    // const items = [
-    //     {
-    //         id: 1,
-    //         img: img1,
-    //         title: 'Bougies Personnalisées',
-    //         prix: '2000',
-    //         quantity: 1,
-    //     },
-    //     {
-    //         id: 2,
-    //         img: img2,
-    //         title: 'Bougies Ramadan',
-    //         prix: '1500',
-    //         quantity: 1,
-    //     },
-    //     {
-    //         id: 3,
-    //         img: img3,
-    //         title: 'Bougies Parfumées',
-    //         prix: '2800',
-    //         quantity: 1,
-    //     },
-    // ]
-    // items.forEach(i => {
+    // get items
+    const { items, deleteItem, editItem } = useCart()
 
-    //     localStorage.setItem(i.id, JSON.stringify(i))
-    // })
+    const handleEditItem = (id: string, quantity: number) => {
+        // test inputted quantity
+        if (isNaN(quantity) && quantity) {
+            return
+        }
+        // deleting quantity
+        if (!quantity) {
+            quantity = 0
+        }
+        // if start with 0
+        if (quantity[0] == '0') {
+            quantity = parseInt(quantity.toString().slice(1))
+        }
+        // max 99
+        if (quantity > 99) {
+            quantity = 99
+        }
 
-    // get items from local storage
-    const [items, setItems] = useState(useLoaderData())
-
-    // cart items in nav
-    const { setNbPanier } = useContext(GlobalContext)
-    useEffect(() => {
-        setNbPanier(getQuantity(items))
-    }, [items, setNbPanier])
-
+        // edit state
+        editItem(id, quantity)
+    }
 
     // total
     let sousTotal = 0
-    items.forEach(e => {
+    Object.keys(items).forEach(key => {
+        const e = items[key]
         sousTotal += e.price * e.quantity
-    });
+    })
     const livraison = 500
     const total = [
-        [
-            'Sous-Total',
-            sousTotal,
-        ],
-        [
-            'Livraison',
-            livraison,
-        ],
-        [
-            'Total',
-            sousTotal + livraison,
-        ]
+        ['Sous-Total', sousTotal],
+        ['Livraison', livraison],
+        ['Total', sousTotal + livraison]
     ]
 
     // inputs
@@ -81,12 +51,13 @@ const CartPage = () => {
 
     // animation of delete
     const animateDeleteCartItem = (id) => {
-        const product = document.getElementById(`product${id}`).style
+        const product = document.getElementById(`product${id}`)?.style
+        if (!product) return
         product.transition = 'height 0.8s, padding 0.8s'
         product.overflow = 'hidden'
-        product.opacity = 0
-        product.height = 0
-        product.padding = 0
+        product.opacity = '0'
+        product.height = '0'
+        product.padding = '0'
         product.border = 'none'
     }
 
@@ -102,21 +73,23 @@ const CartPage = () => {
             <section className='bg-red-0'>
 
                 {/* product card */}
-                {items.length == 0
+                {Object.keys(items).length == 0
                     ? (
                         <h5 className={`italic text-slate-500`}>
                             {`Aucun article dans votre panier`}
                         </h5>
                     )
                     : (
-                        items.map((item) => (
+                        Object.keys(items).map((id) => {
+                            const item = items[id]
+                            return (
                             <article id={`product${item.id}`} key={item.id} className={`flex justify-between items-center
                             h-[100px] py-[0.75rem] gap-4
                             border-solid border-y-2 border-slate-100
                             bg-blue-20
                             lg:h-[130px]
                             `}
-                                onTransitionEnd={() => deleteCartItem(item.id, setItems)}>
+                                onTransitionEnd={() => deleteItem(item.id)}>
 
                                 {/* infos */}
                                 <div className={`flex justify-between items-center
@@ -161,7 +134,7 @@ const CartPage = () => {
                                 border-solid border-2 border-slate-100
                                 lg:text-start lg:w-[60px]
                                 `}
-                                        onChange={(e) => { editCartItem(item.id, e.target.value, setItems) }}
+                                        onChange={(e) => { handleEditItem(item.id, parseInt(e.target.value)) }}
                                     />
 
                                     {/* delete */}
@@ -171,7 +144,7 @@ const CartPage = () => {
                                 `} />
                                 </div>
                             </article>
-                        ))
+                        )})
                     )
                 }
 
@@ -220,10 +193,10 @@ const CartPage = () => {
                     <div className={`w-full max-w-[160px] mx-auto py-[20px]
                     `}>
                         <button className={`w-full py-[14px] rounded-md
-                        ${items.length > 0 ? 'bg-black' : 'bg-gray-400'}
+                        ${Object.keys(items).length > 0 ? 'bg-black' : 'bg-gray-400'}
                         text-white
                         `}
-                            disabled={items.length == 0}
+                            disabled={Object.keys(items).length == 0}
                         >
                             Commander
                         </button>

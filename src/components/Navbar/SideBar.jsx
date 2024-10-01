@@ -1,13 +1,14 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import NavElement from './NavElement'
-import { ToggleContext } from './Navbar'
 import { IoMdClose } from 'react-icons/io'
 import { IoIosSearch } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
+import { useNavToggle } from "../../state/navToggle";
+
 
 const SideBar = ({ links }) => {
     // context of state
-    const { toggle, handleToggle } = useContext(ToggleContext)
+    const { toggle, handleToggle } = useNavToggle()
 
     // query
     const [query, setQuery] = useState('')

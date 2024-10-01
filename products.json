@@ -62,27 +62,6 @@
             "category": "Evenement",
             "title": "Bougies Ramadan",
             "price": 2500
-        },
-        {
-            "id": 10,
-            "img": "/src/assets/imgCarousel_1.jpg",
-            "category": "Premium",
-            "title": "Bougies Personnalisées",
-            "price": 3000
-        },
-        {
-            "id": 11,
-            "img": "/src/assets/imgCarousel_3.jpg",
-            "category": "Classique",
-            "title": "Bougies Parfumées",
-            "price": 2800
-        },
-        {
-            "id": 12,
-            "img": "/src/assets/imgCarousel_2.jpg",
-            "category": "Evenement",
-            "title": "Bougies Ramadan",
-            "price": 2500
         }
     ]
 }

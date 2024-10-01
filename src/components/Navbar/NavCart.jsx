@@ -1,15 +1,16 @@
-import { useContext } from 'react'
-import { GlobalContext } from '../../App'
 import { useNavigate } from 'react-router-dom'
 import { IoCartOutline } from 'react-icons/io5'
+import { useCart } from '../../state/cartStore'
 
 const NavCart = () => {
     // navigate
     const navigate = useNavigate()
     const goToPanier = () => navigate('/panier')
+    
     // nb panier
-    const { nbPanier } = useContext(GlobalContext)
-
+    const { nb } = useCart()
+    console.log(nb)
+    
     // component
     return (
         <div className={`h-full flex flex-row justify-end items-center
@@ -30,7 +31,7 @@ const NavCart = () => {
             text-center text-[12px] bg-red-600 text-white`}
                     onClick={goToPanier}
                 >
-                    {nbPanier > 99 ? 99 : nbPanier}
+                    {nb > 99 ? 99 : nb}
                 </div>
             </div>
         </div>

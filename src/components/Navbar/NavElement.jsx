@@ -1,6 +1,6 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { NavLink } from 'react-router-dom'
-import { ToggleContext } from './Navbar'
+import { useNavToggle } from '../../state/navToggle'
 
 const NavElement = ({ link, content }) => {
     // style
@@ -19,7 +19,7 @@ const NavElement = ({ link, content }) => {
             : navElementClass
 
     // get setToggle from context
-    const { setToggle } = useContext(ToggleContext)
+    const { setToggle } = useNavToggle()
 
     // component
     return (

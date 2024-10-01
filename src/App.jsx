@@ -1,4 +1,3 @@
-import { useContext, useState } from 'react'
 import {
   RouterProvider,
   createBrowserRouter,
@@ -6,34 +5,24 @@ import {
   Route,
 } from 'react-router-dom'
 
+import { QueryClient, QueryClientProvider } from 'react-query'
 import HomePage from './pages/Home/HomePage'
 import CartPage from './pages/Cart/CartPage'
 import ProductsListPage from './pages/ProductsList/ProductsListPage'
-import ProductPage from './pages/Product/ProductPage'
+import ProductPage from './pages/ProductPage/ProductPage'
 import MainTemplate from './templates/MainTemplate'
 import NotFoundPage from './pages/NotFound/NotFoundPage'
-import { getCartItems, getQuantity } from './pages/Cart/cartUtils'
 
-import { createContext } from 'react'
 
-export const GlobalContext = createContext()
-
+const queryClient = new QueryClient()
 
 function App() {
-  // glob states
-  const [nbPanier, setNbPanier] = useState(getQuantity(getCartItems()))
-
-  // saving context
-  const context = {
-    nbPanier, setNbPanier,
-  }
-
   // router
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path='/' element={<MainTemplate />}>
         <Route index element={<HomePage />}></Route>
-        <Route path='panier' element={<CartPage />} loader={getCartItems}></Route>
+        <Route path='panier' element={<CartPage />}></Route>
         <Route path='produits' element={<ProductsListPage />}></Route>
         <Route path='produits/:id' element={<ProductPage />}></Route>
         <Route path='*' element={<NotFoundPage />}></Route>
@@ -42,10 +31,9 @@ function App() {
   )
 
   return (
-    <GlobalContext.Provider value={context}>
+    <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
-    </GlobalContext.Provider>
-
+    </QueryClientProvider>
   )
 }
 
