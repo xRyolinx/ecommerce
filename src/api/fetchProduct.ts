@@ -10,7 +10,7 @@ function sleep(ms) {
 }
 
 export const getAllProducts = (search: string = "") => {
-    const { data, isLoading } = useQuery<Product[]>({
+    const { data, isLoading, isError } = useQuery<Product[]>({
         queryFn: async () => {
             // simulate time to fetch
             await sleep(1000)
@@ -29,11 +29,11 @@ export const getAllProducts = (search: string = "") => {
         queryKey: ["products", search]
     })
 
-    return { data, isLoading }
+    return { data, isLoading, isError }
 };
 
 export const getProduct = (id: string) => {
-    const { data, isLoading } = useQuery<Product>({
+    const { data, isLoading, isError } = useQuery<Product>({
         queryFn: async () => {
             // simulate time to fetch
             await sleep(1000)
@@ -44,5 +44,5 @@ export const getProduct = (id: string) => {
         queryKey: ["product", id]
     })
 
-    return { data, isLoading }
+    return { data, isLoading, isError }
 };
