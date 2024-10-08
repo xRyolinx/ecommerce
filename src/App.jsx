@@ -14,8 +14,6 @@ import MainTemplate from './templates/MainTemplate'
 import NotFoundPage from './pages/NotFound/NotFoundPage'
 
 
-const queryClient = new QueryClient()
-
 function App() {
   // router
   const router = createBrowserRouter(
@@ -31,9 +29,7 @@ function App() {
   )
 
   return (
-    <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
-    </QueryClientProvider>
   )
 }
 
