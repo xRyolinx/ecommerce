@@ -1,0 +1,11 @@
+// install prisma
+npm i prisma
+
+// init prisma
+npx prisma init --datasource-provider sqlite
+
+// migrate
+npx prisma migrate dev --name init
+
+// generate
+npx prisma generate
