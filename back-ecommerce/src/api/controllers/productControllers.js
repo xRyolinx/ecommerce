@@ -1,21 +1,85 @@
 import { Product } from "../../prisma/prisma.js";
-import { addToHistory } from "./historyController.js";
-
+import { addToHistory } from "./historyControllers.js";
+import { getFile } from "../../utils/file.js"
 
 // get all products
 const getAllProducts = async (req, res) => {
     try {
+        // condition
+        let cond_global = {}
+        let cond = {}
+        
+        // query
+        const q = req.query.q || ""
+        if (q) {
+            cond = {
+                ...cond,
+                name: {
+                    startsWith: q
+                }
+            }
+        }
+
+        // categories
+        const categories = req.query.categories
+        ? req.query.categories.split(",")?.map(Number)
+        : [];
+        if (categories && categories.length > 0) {
+            cond = {
+                ...cond,
+                categoryId: {
+                    in: categories
+                }
+            }
+        }
+
+        // limit
+        const limit = req.query.limit || null
+        if (limit) {
+            cond_global = {
+                ...cond_global,
+                take: Number(limit)
+            }
+        } 
+
+        // min
+        const min = req.query.min_price || null
+        if (min) {
+            cond = {
+                ...cond,
+                price: {
+                    ...cond.price,
+                    gte: Number(min)
+                }
+            }
+        }
+
+        // max
+        const max = req.query.max_price || null
+        if (max) {
+            cond = {
+                ...cond,
+                price: {
+                    ...cond.price,
+                    lte: Number(max)
+                }
+            }
+        }
+
         // get
         const products = await Product.findMany({
+            ...cond_global,
             include: {
                 category: true
-            }
+            },
+            where: cond
         })
 
         // send data
         res.status(200).json(products)
     }
     catch (e) {
+        console.log(e)
         return res.status(400).send("Une erreur est survenue")
     }
 }
@@ -25,7 +89,7 @@ const getAllProducts = async (req, res) => {
 const getProduct = async (req, res) => {
     try {
         // get id
-        const id = req.params.id;
+        const id = parseInt(req.params.id);
         
         // get product
         const product = await Product.findUnique({
@@ -42,6 +106,7 @@ const getProduct = async (req, res) => {
         res.status(200).json(product)
     }
     catch (e) {
+        console.log(e)
         return res.status(400).send("Une erreur est survenue")
     }
 }
@@ -51,8 +116,12 @@ const getProduct = async (req, res) => {
 const addProduct = async (req, res) => {
     // get data
     const userId = req.userId;
-    const { name, price, description, categoryId} = req.body;
-    const img = req.file.path;
+    
+    const { name, description } = req.body;
+    const price = parseInt(req.body.price)
+    const categoryId = parseInt(req.body.categoryId) || null
+
+    const img = getFile(req.file)
 
     try {
         // create product
@@ -73,6 +142,7 @@ const addProduct = async (req, res) => {
         return res.status(201).send("Produit ajouté avec succes")
     }
     catch (e) {
+        console.log(e)
         return res.status(400).send("Une erreur est survenue. Vérifiez que tous les champs sont pleins")
     }
 }
@@ -83,7 +153,7 @@ const deleteProduct = async (req, res) => {
     try {
         // get data
         const userId = req.userId;
-        const id = req.params.id;
+        const id = parseInt(req.params.id);
         
         // get product
         const product = await Product.findUnique({
@@ -105,6 +175,7 @@ const deleteProduct = async (req, res) => {
         return res.status(200).send("Produit supprimé avec succes")
     }
     catch (e) {
+        console.log(e)
         return res.status(400).send("Une erreur est survenue")
     }
 }

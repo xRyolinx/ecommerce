@@ -18,8 +18,7 @@ const upload = (folder) => {
             cb(null, true)
         }
         else {
-            req.file = {}
-            req.file.path = ""
+            req.file = null
             cb(null, false)
         }
     }

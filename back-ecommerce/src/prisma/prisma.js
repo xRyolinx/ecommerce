@@ -7,5 +7,7 @@ export const Admin = prisma.admin;
 export const Category = prisma.category;
 export const Product = prisma.product;
 export const History = prisma.history;
+export const Order = prisma.order;
+export const OrderProduct = prisma.orderProduct;
 
 export default prisma;

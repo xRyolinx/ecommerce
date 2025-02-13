@@ -21,7 +21,7 @@ const verifyToken = async (req, res, next) => {
         const decodedData = jwt.verify(token, JWT_SECRET)
 
         // attach to req
-        req.userId = decodedData.userId;
+        req.userId = parseInt(decodedData.userId);
         req.role = decodedData.role;
 
         // to next middleware

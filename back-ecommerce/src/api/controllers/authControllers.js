@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../../config/config.js";
 import { Admin } from "../../prisma/prisma.js";
 import { isValidEmail, hashPassword } from "../../utils/auth.js"
-import { addToHistory } from "./historyController.js";
+import { addToHistory } from "./historyControllers.js";
 import { capitalize } from "../../utils/string.js";
 
 

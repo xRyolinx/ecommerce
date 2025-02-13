@@ -18,18 +18,11 @@ const getAllHistory = async (req, res) => {
 
 const addToHistory = async (adminId, description) => {
     try {
-        // get admin
-        const admin = await Admin.findUnique({
-            where: {
-                id: adminId
-            }
-        })
-
         // add action to history
         await History.create({
             data: {
                 adminId,
-                description: `${admin.name} #${adminId} - ${description}`,
+                description
             }
         })
 

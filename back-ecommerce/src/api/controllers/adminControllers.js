@@ -1,5 +1,5 @@
 import { Admin } from "../../prisma/prisma.js";
-import { addToHistory } from "./historyController.js";
+import { addToHistory } from "./historyControllers.js";
 
 
 // get all admins
@@ -12,6 +12,7 @@ const getAllAdmins = async (req, res) => {
         res.status(200).json(admins)
     }
     catch (e) {
+        console.log(e)
         return res.status(400).send("Une erreur est survenue")
     }
 }
@@ -21,7 +22,7 @@ const getAllAdmins = async (req, res) => {
 const getAdmin = async (req, res) => {
     try {
         // get id
-        const id = req.params.id;
+        const id = parseInt(req.params.id);
         
         // get admin
         const admin = await Admin.findUnique({
@@ -35,6 +36,7 @@ const getAdmin = async (req, res) => {
         res.status(200).json(admin)
     }
     catch (e) {
+        console.log(e)
         return res.status(400).send("Une erreur est survenue")
     }
 }
@@ -45,7 +47,7 @@ const deleteAdmin = async (req, res) => {
     try {
         // get data
         const userId = req.userId;
-        const id = req.params.id;
+        const id = parseInt(req.params.id);
         
         // get admin
         const admin = await Admin.findUnique({
@@ -67,6 +69,7 @@ const deleteAdmin = async (req, res) => {
         return res.status(200).send("Admin supprimé avec succes")
     }
     catch (e) {
+        console.log(e)
         return res.status(400).send("Une erreur est survenue")
     }
 }

@@ -1,6 +1,9 @@
 import express from "express"
+import cors from "cors"
 import "./config/config.js"
 import "./prisma/prisma.js"
+import "./config/transporter.js"
+
 import routes from './api/routes/index.js'; 
 import logging from './api/middlewares/logging.js';
 import { SERVER_PORT } from "./config/config.js";
@@ -9,6 +12,7 @@ import { fileURLToPath } from 'url';
 
 // create app and connect to db
 const app = express()
+app.use(cors())
 
 // static
 app.use(express.static("./public"));

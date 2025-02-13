@@ -1,15 +1,41 @@
 import { Category } from "../../prisma/prisma.js";
-import { addToHistory } from "./historyController.js";
-
+import { addToHistory } from "./historyControllers.js";
+import { getFile } from "../../utils/file.js";
 
 // get all categories
 const getAllCategories = async (req, res) => {
     try {
+        // condition
+        let cond_global = {}
+        let cond = {}
+        
+        // query
+        const q = req.query.q || ""
+        if (q) {
+            cond = {
+                ...cond,
+                name: {
+                    startsWith: q
+                }
+            }
+        }
+
+        // limit
+        const limit = req.query.limit || null
+        if (limit) {
+            cond_global = {
+                ...cond_global,
+                take: Number(limit)
+            }
+        } 
+
         // get
         const categories = await Category.findMany({
+            ...cond_global,
             include: {
                 products: true,
-            }
+            },
+            where: cond
         })
 
         // send data
@@ -26,7 +52,7 @@ const getAllCategories = async (req, res) => {
 const getCategory = async (req, res) => {
     try {
         // get id
-        const id = req.params.id;
+        const id = parseInt(req.params.id);
         
         // get category
         const category = await Category.findUnique({
@@ -53,14 +79,15 @@ const getCategory = async (req, res) => {
 const addCategory = async (req, res) => {
     // get data
     const userId = req.userId;
-    const { name } = req.body;
-    const img = req.file.path;
-
+    const { name, description } = req.body;
+    const img = getFile(req.file)
+        
     try {
         // create category
         const category = await Category.create({
             data: {
                 name,
+                description,
                 img,
             }
         })
@@ -83,7 +110,7 @@ const deleteCategory = async (req, res) => {
     try {
         // get data
         const userId = req.userId;
-        const id = req.params.id;
+        const id = parseInt(req.params.id);
         
         // get category
         const category = await Category.findUnique({
